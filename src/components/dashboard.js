@@ -3,7 +3,7 @@ import { PieChart } from '@rsuite/charts';
 import { tasksData, sampleData } from "../utils/data"
 import { connect } from 'react-redux';
 import { useDispatch } from 'react-redux';
-
+import profile from "../assets/profile.png"
 const Dashboard = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [taskName, setTaskName] = useState("");
@@ -129,13 +129,14 @@ const Dashboard = (props) => {
             <div className="flex justify-between py-4 lg:px-28 px-12 bg-white shadow-md">
                 <div className="flex">
                     {/* <></> */}
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray" class="w-6 h-6">
+                    {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray" class="w-6 h-6">
                         <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
-                    </svg>
+                    </svg> */}
+                    <img src={profile} alt="profile" className="h-12 rounded-3xl"/>
 
-                    <h2 className="text-sm text-slate-400 ml-2">{props.user}</h2>
+                    <h2 className="text-xl text-slate-400 ml-2 mt-2">{props.user}</h2>
                 </div>
-                <div className="text-sm text-slate-400 font-medium cursor-pointer" onClick={() => {logout()}}>
+                <div className="text-base mt-2 text-slate-400 font-medium cursor-pointer" onClick={() => {logout()}}>
                     Logout
                 </div>
             </div>
@@ -144,14 +145,14 @@ const Dashboard = (props) => {
                 <div className="lg:grid lg:place-items-center lg:h-screen mt-4 text-center">
                     <div className="bg-white lg:rounded-lg lg:w-60 p-6 shadow-md">
                         <h1 className="mb-4 font-medium text-lg text-slate-400">You have no task</h1>
-                        <button className="rounded bg-blue-400 text-white text-sm py-1 px-2" onClick={() => setShowModal(true)}>+ New Task</button>
+                        <button className="rounded bg-blue-500 text-white text-sm py-1 px-2" onClick={() => setShowModal(true)}>+ New Task</button>
                     </div>
                 </div> :
                 <div className="lg:px-28 mt-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div className="bg-white rounded-lg p-6 shadow-md">
                             <h1 className="mb-4 font-medium text-lg text-slate-400">Task Completed</h1>
-                            <div className="text-slate-400"><span className="text-7xl font-bold text-cyan-500">{data.completedTasks}</span>/{data.totalTasks}</div>
+                            <div className="text-slate-400"><span className="text-7xl font-bold text-blue-500">{data.completedTasks}</span>/{data.totalTasks}</div>
                         </div>
                         <div className="bg-white rounded-lg p-6 shadow-md">
                             <h1 className="mb-4 font-medium text-lg text-slate-400">Lastest Created Task</h1>
@@ -176,7 +177,7 @@ const Dashboard = (props) => {
                             <div className="mb-3 font-medium text-lg text-slate-400 text-center">Tasks</div>
                             <div className="lg:flex px-4">
                                 <input placeholder="Search by task name" type={"text"} className="w-full mb-2 bg-slate-200 px-3 py-1 text-sm rounded-lg lg:mr-4 h-10" onChange={e => setQuery(e.target.value)}/>
-                                <button className="rounded-lg h-10 lg:w-32 bg-blue-400 text-white w-full text-sm py-1 px-2" onClick={() => setShowModal(true)}>+ New Task</button>
+                                <button className="rounded-lg h-10 lg:w-40 bg-blue-500 text-white w-full text-sm py-1 px-2" onClick={() => setShowModal(true)}>+ New Task</button>
                             </div>
                         </div>
                         <div className="list bg-white w-full lg:rounded-lg shadow-md px-4 mt-2">
@@ -192,7 +193,7 @@ const Dashboard = (props) => {
                                     <div className="item-map flex justify-between border-b border-double border-slate-200 py-4" key={index}>
                                         <div className="form-check">
                                             <input className="cursor-pointer mr-2" type="checkbox" id="flexCheckChecked" checked={task.completed} onChange={() => checkTasks(index)}/>
-                                            <label className={task.completed ? "line-through text-slate-400 font-medium text-lg" : "font-medium text-lg text-cyan-500"} htmlFor="flexCheckChecked">
+                                            <label className={task.completed ? "line-through text-slate-400 font-medium text-lg" : "font-medium text-lg text-blue-500"} htmlFor="flexCheckChecked">
                                                 {task.name}
                                             </label>
                                         </div>
@@ -232,7 +233,7 @@ const Dashboard = (props) => {
                                                 null
                                             }
                                         </div>
-                                        <button className="rounded bg-blue-400 text-white w-full text-sm py-1 px-2" onClick={() => !selectedTask.name ? addTask() : editTask()}>{!selectedTask.name ? "+ New Task" : "Update"}</button>
+                                        <button className="rounded bg-blue-500 text-white w-full text-sm py-1 px-2" onClick={() => !selectedTask.name ? addTask() : editTask()}>{!selectedTask.name ? "+ New Task" : "Update"}</button>
                                     </div>
                                 </div>
                             </div>

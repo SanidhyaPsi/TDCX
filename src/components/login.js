@@ -34,7 +34,7 @@ const Login = () => {
                         }
                     </div>
                 </div>
-                <button className="rounded bg-blue-400 text-white text-sm w-full py-1" type="submit">Login</button>
+                <button className="rounded bg-blue-500 text-white text-sm w-full py-1" type="submit">Login</button>
             </form>
         </div>
       )
