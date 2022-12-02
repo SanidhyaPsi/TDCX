@@ -4,13 +4,18 @@ import { tasksData, sampleData } from "../utils/data"
 import { connect } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import profile from "../assets/profile.png"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Dashboard = (props) => {
     const [showModal, setShowModal] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [taskName, setTaskName] = useState("");
     const [tasks, setTasks] = useState(tasksData)
     const [data, setData] = useState(sampleData)
     const [query, setQuery] = useState("")
     const [selectedTask, setSelectedTask] = useState({})
+
     const [error, setError] = useState(false)
     const modalRef = useRef(null);
     const dispatch = useDispatch()
@@ -39,14 +44,15 @@ const Dashboard = (props) => {
 
     useEffect(() => {
         function handler(event) {
-            if(showModal && modalRef.current && !modalRef.current?.contains(event.target)) {
+            if((showModal || showConfirmationModal) && modalRef.current && !modalRef.current?.contains(event.target)) {
                 setShowModal(false)
+                setShowConfirmationModal(false)
             }
         }
         document.addEventListener("mousedown", handler);
         return () => document.removeEventListener("mousedown", handler);
 
-    }, [showModal])
+    }, [showModal, showConfirmationModal])
     const addTask = () => {
         if(taskName){
             const arr = [...tasks]
@@ -62,6 +68,7 @@ const Dashboard = (props) => {
             setTaskName("")
             setShowModal(false)
             setError(false)
+            toast("Task added succesfully")
         }
         else{
             setError(true)
@@ -77,6 +84,9 @@ const Dashboard = (props) => {
         arr.splice(index, 1)
         setData(dataTemp)
         setTasks(arr)
+        setSelectedTask({})
+        setShowConfirmationModal(false)
+        toast("Task deleted succesfully")
     }
     const checkTasks = (index) => {
         const arr = [...tasks]
@@ -105,6 +115,7 @@ const Dashboard = (props) => {
             setShowModal(false)
             setSelectedTask({})
             setError(false)
+            toast("Task updated succesfully")
         }
         else{
             setError(true)
@@ -113,6 +124,10 @@ const Dashboard = (props) => {
     }
     const logout = () => {
         dispatch({ type: "LOGOUT" });          
+    }
+    const taskDelete = (name, index) => {
+        setShowConfirmationModal(true)
+        setSelectedTask({name, index})
     }
     const getReverse = (tasks) => {
         const arr = tasks.sort(function(a, b) {
@@ -201,7 +216,7 @@ const Dashboard = (props) => {
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray" className="w-6 h-6 mr-2 cursor-pointer" onClick={() => selectTask(task, index)}>
                                                 <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"/>
                                             </svg>
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray" className="w-6 h-6 cursor-pointer" onClick={() => deleteTask(index)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray" className="w-6 h-6 cursor-pointer" onClick={() => taskDelete(task.name, index)}>
                                                 <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
                                             </svg>
 
@@ -242,6 +257,37 @@ const Dashboard = (props) => {
                     </>
                 ) : null}
             </div>
+            <div>     
+                {showConfirmationModal ? (
+                    <>
+                        <div
+                        className="justify-center items-center flex overflow-x-hidden overflow-y-hidden fixed inset-0 z-50 outline-none focus:outline-none px-6" 
+                        >
+                            <div className="relative w-auto w-full my-6 mx-auto max-w-3xl">
+                                <div className="grid place-items-center h-screen">
+                                    <div className="bg-white rounded-lg lg:w-72 h-48 w-full p-6 shadow-md" ref={modalRef}>
+                                        <h1 className="mb-4 font-medium text-lg text-slate-400">Confirmation</h1>
+                                        <div className="mb-2">
+                                            <p className="font-medium text-sm text-blue-500" >Are you sure, you want to delete this task.</p>
+                                        </div>
+
+                                        <button className="rounded bg-red-500 mt-6 text-white w-full flex justify-center text-sm py-1 px-2" onClick={() => deleteTask(selectedTask.index)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6 cursor-pointer" >
+                                                <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                    </>
+                ) : null}
+            </div>
+            <ToastContainer 
+                autoClose={3000}
+                pauseOnHover
+            />
         </div>
       )
 }
